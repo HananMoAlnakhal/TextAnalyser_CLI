@@ -1,4 +1,8 @@
 import random
+import shutil
+import math
+import os
+import platform
 from TEXTstyling import *
 #=========================================================-MAIN-CLASS-==========================================================
 class SmartTextAnalyzer():
@@ -64,16 +68,84 @@ class SmartTextAnalyzer():
             n=len(Sorted)
         return Sorted[:n]
     
-    def WordCloud(self,n=5,KeyWords=False,Vis=False):
+    def ClearTerminal(self):
+        os.system('cls' if platform.system() == 'Windows' else 'clear')
+
+    def WordCloud(self,n=5,KeyWords=False,Bar=False, Vis=False):
+        self.ClearTerminal()
         W=self.MostFrequentWords(n,KeyWords)
         WodWMostCount=W[0][1]
         Words=[(x,y/WodWMostCount) for x,y in W]
-        if Vis:
+        # print(Words)
+        if Bar:
             for ind,(w,f) in enumerate(Words):
                 x="="
-                color=random.choice([GREEN,ORANGE,BLUE,RED,YELLOW,SkyBlue,GRASS,BROWN,PINK,PURPLE,CYAN,sysBLUE])
-                print(BlackBG(w.ljust(25)),BlackBG(color(x*(round(7*f)*10))),BlackBG(color(" %.2f | %2.2f"%(W[ind][1],f*100)+"% ")),sep="")
-        return Words
+                color=allColors.GetColor(reverse=True)
+                print(BlackBG(w.ljust(25)+color(x*(round(7*f)*10)))+BlackBG(color(" %.2f | %2.2f"%(W[ind][1],f*100)+"% ")))
+        if Vis:
+            TakenPOS=self.generate_compact_positions(Words,max_positions=len(Words))
+            for ind in range(len(TakenPOS)):
+                self._Print_square(TakenPOS[ind],allColors.GetColor(reverse=True),int(round(Words[0:len(TakenPOS)][ind][1]*10)),Words[0:len(TakenPOS)][ind][0])
+                print(f"\033[0H")
+        # return Words
+    def _Print_square(self,pos,COLOR=PINK,a=9,word="TEXT"):
+        lines,col=pos
+        for line in range(int(a)):
+            print(f"\033[{(lines-a//2)+line};{col-round((a*3)//2)}H"+COLOR(" "*round(a*3),BG=True))
+        print(f"\033[{(lines)};{col-(len(word))//2}H"+BOLD(COLOR(word)))
+    def generate_compact_positions(self,data, max_positions=15):
+        """
+        Generate organized positions for compact word cloud design
+        Returns a list of (row, col) positions that work with your existing code
+        """
+        size = shutil.get_terminal_size()
+        middle_line = size.lines // 2
+        middle_col = size.columns // 2
+        
+        positions = []
+        
+        positions.append((middle_line, middle_col))
+        
+        added_positions = 1
+        ring = 1
+        
+        while added_positions < max_positions and ring <= 8:
+            ring_positions = []
+            
+            if ring == 1:
+                ring_positions = [(middle_line, middle_col - 25),    (middle_line, middle_col + 25),  (middle_line - 6, middle_col),   (middle_line + 6, middle_col),     (middle_line - 4, middle_col - 18), (middle_line - 4, middle_col + 18), (middle_line + 4, middle_col - 18), (middle_line + 4, middle_col + 18), ]
+            elif ring == 2:
+                ring_positions = [(middle_line, middle_col - 45),    (middle_line, middle_col + 45),     (middle_line - 12, middle_col),  (middle_line + 12, middle_col),  (middle_line - 8, middle_col - 30), (middle_line - 8, middle_col + 30), (middle_line + 8, middle_col - 30), (middle_line + 8, middle_col + 30), ]
+            elif ring == 3:
+                ring_positions = [(middle_line - 18, middle_col - 15),(middle_line - 18, middle_col + 15),(middle_line + 18, middle_col - 15),(middle_line + 18, middle_col + 15),(middle_line - 2, middle_col - 60),(middle_line + 2, middle_col - 60), (middle_line - 2, middle_col + 60),  (middle_line + 2, middle_col + 60),  ]
+            else:
+                angle_step = 360 // (ring * 4)  
+                radius_row = min(ring * 6, (size.lines // 2) - 3)
+                radius_col = min(ring * 15, (size.columns // 2) - 10)
+                for angle in range(0, 360, angle_step):
+                    rad = math.radians(angle)
+                    row = int(middle_line + radius_row * math.sin(rad))
+                    col = int(middle_col + radius_col * math.cos(rad))
+                    ring_positions.append((row, col))
+            for row, col in ring_positions:
+                if added_positions >= max_positions:
+                    break
+                margin =5
+                if (margin <= row <= size.lines - margin and 
+                    margin <= col <= size.columns - margin):
+                    positions.append((row, col))
+                    added_positions += 1
+            
+            ring += 1
+        
+        return positions[:max_positions]
+    
+    def WordCloudShape(self,area,height,MInWidth):
+        if (area//height)>MInWidth:
+            return(height,area//height)
+        else:
+            return(height,MInWidth)
+
 
     def searchText(self,Target,replacing=False):
         '''This wil return the search result in this format \n
@@ -142,5 +214,5 @@ class SmartTextAnalyzer():
 if __name__=="__main__":
     file=open("SpaceIpsum.txt").read()
     Report=SmartTextAnalyzer(file)
-    Report.WordCloud(8,True,Vis=True)
+    Report.WordCloud(30,True,Vis=True)
 

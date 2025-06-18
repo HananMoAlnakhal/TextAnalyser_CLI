@@ -1,3 +1,5 @@
+from util import CircularDoubledList
+
 #-----------------ToPrintTextWithColors--------------------
 
 # def GRASS(text,BG=False): (＞﹏＜) I didn't like that color anymore!
@@ -59,86 +61,36 @@ def ITALIC(text):
     return '\x1b[3m'+str(text)+'\x1b[0m'
 def UNDERLINED(text):
     return '\x1b[4m'+str(text)+'\x1b[0m'
-
-class Linked_Colors:
-    class ColorNode:
-        def __init__(self,val,next=None,prev=None):
-            self.v=val
-            self.next=next
-            self.prev=prev
-
-    def __init__(self):
-        self._tail=None
-        self._head=None
-        self._size=0
-
-    def enqueue(self,e):
-        newest=self.ColorNode(e)
-        if self._size==0:
-            newest.next=newest
-            newest.prev=newest
-            self._head=newest
-            self._tail=newest
-        else:
-            newest.next=self._head
-            newest.prev=self._tail
-            self._tail.next=newest
-        self._tail = newest
-        self._head.prev=self._tail
-        self._size+=1
-
-    def enQ_LIST(self,LIST):
-        for item in LIST:
-            self.enqueue(item)
-        return self
-
-    def GetColor(self,reverse=False):
-        val=self._tail.v if not reverse else None
-        self.__rotate(reverse)
-        if reverse:val=self._tail.v
-        return val
-    
-    def __rotate(self,r=False):
-        if r:
-            self._tail = self._tail.next    
-        else:
-            self._tail = self._tail.prev
 #------------------------------------------
 #    RAINBOW-colors
 # -----------------------------------------
-allColors=Linked_Colors().enQ_LIST([RED,BROWN,ORANGE,YELLOW,GREEN,CYAN,SkyBlue,Light_BLUE,BLUE,sysBLUE,MIDPurple,PURPLE,PINK,FOSHII])
-#adding enQ_LIST mwthod made us avoid the following code each time we wanna make a color sequence:
-# colors_list=[RED,BROWN,ORANGE,YELLOW,GREEN,CYAN,SkyBlue,BLUE,sysBLUE,MIDPurple,PURPLE,PINK,FOSHII]
-# LinkedColors=Linked_Colors()
-# for color in colors_list:
-#     LinkedColors.enqueue(color)
-# def ColorSer():
-#     LinkedColors.rotate()
-#     return LinkedColors._tail.v
+allColors=CircularDoubledList().enQ_LIST([RED,BROWN,ORANGE,YELLOW,GREEN,CYAN,SkyBlue,Light_BLUE,BLUE,sysBLUE,MIDPurple,PURPLE,PINK,FOSHII])
 
 #------------------------------------------
 #    COOL-colors
 # -----------------------------------------
 Cools=[GREEN,SkyBlue,CYAN,Light_BLUE,BLUE,sysBLUE,MIDPurple,PURPLE,PINK]
-CoolColors=Linked_Colors().enQ_LIST(Cools+Cools[1:-1][::-1])
+CoolColors=CircularDoubledList().enQ_LIST(Cools+Cools[1:-1][::-1])
 #------------------------------------------
 #    HOT-colors
 # -----------------------------------------
 Hots=[RED,BROWN,ORANGE,YELLOW,GREEN]
-HotColors=Linked_Colors().enQ_LIST(Hots+Hots[1:-1][::-1])
+HotColors=CircularDoubledList().enQ_LIST(Hots+Hots[1:-1][::-1])
 #------------------------------------------
 #    WormCool(From Red to sysBlue)
 # -----------------------------------------
 Hot_Cool=[CYAN,SkyBlue,Light_BLUE,BLUE,sysBLUE,MIDPurple,PURPLE,PINK,FOSHII,RED]
-HotCool=Linked_Colors().enQ_LIST(Hot_Cool)
+HotCool=CircularDoubledList().enQ_LIST(Hot_Cool)
 #------------------------------------------
 #    Black to white
 # -----------------------------------------
 BlackWhite=[Gray1,Gray2,Gray3,Gray4,Gray5,Gray6,Gray7,Gray8,Gray9]
-GrayScale=Linked_Colors().enQ_LIST(BlackWhite+BlackWhite[::-1])
+GrayScale=CircularDoubledList().enQ_LIST(BlackWhite+BlackWhite[::-1])
+
 #===============================================================================================================================
 #    USE CASES
 # A FUNCTION THAT EDIT THE TEXT AND RETURN TEXT WITH ASCII SYMBOLS FOR THE TERMINAL
+#-------------------------------------------------------------------------------------------------------------------------------
 # color=CoolColors.GetColor()
 # color=HotColors.GetColor()
 # color=allColors.GetColor(reverse=False)#start From red if reversed if not r then starts from cool colors
