@@ -87,12 +87,13 @@ class SmartTextAnalyzer():
             for ind in range(len(TakenPOS)):
                 self._Print_square(TakenPOS[ind],allColors.GetColor(reverse=True),int(round(Words[0:len(TakenPOS)][ind][1]*10)),Words[0:len(TakenPOS)][ind][0])
                 print(f"\033[0H")
-        # return Words
+       
     def _Print_square(self,pos,COLOR=PINK,a=9,word="TEXT"):
         lines,col=pos
         for line in range(int(a)):
             print(f"\033[{(lines-a//2)+line};{col-round((a*3)//2)}H"+COLOR(" "*round(a*3),BG=True))
         print(f"\033[{(lines)};{col-(len(word))//2}H"+BOLD(COLOR(word)))
+
     def generate_compact_positions(self,data, max_positions=15):
         """
         Generate organized positions for compact word cloud design
@@ -113,15 +114,15 @@ class SmartTextAnalyzer():
             ring_positions = []
             
             if ring == 1:
-                ring_positions = [(middle_line, middle_col - 25),    (middle_line, middle_col + 25),  (middle_line - 6, middle_col),   (middle_line + 6, middle_col),     (middle_line - 4, middle_col - 18), (middle_line - 4, middle_col + 18), (middle_line + 4, middle_col - 18), (middle_line + 4, middle_col + 18), ]
+                ring_positions = [(middle_line, middle_col - 30),    (middle_line, middle_col + 25),  (middle_line - 6, middle_col),   (middle_line + 6, middle_col),     (middle_line - 4, middle_col - 18), (middle_line - 4, middle_col + 18), (middle_line + 4, middle_col - 18), (middle_line + 4, middle_col + 18), ]
             elif ring == 2:
-                ring_positions = [(middle_line, middle_col - 45),    (middle_line, middle_col + 45),     (middle_line - 12, middle_col),  (middle_line + 12, middle_col),  (middle_line - 8, middle_col - 30), (middle_line - 8, middle_col + 30), (middle_line + 8, middle_col - 30), (middle_line + 8, middle_col + 30), ]
+                ring_positions = [(middle_line, middle_col - 45),    (middle_line, middle_col + 50),     (middle_line - 12, middle_col),  (middle_line + 12, middle_col),  (middle_line - 8, middle_col - 30), (middle_line - 8, middle_col + 30), (middle_line + 8, middle_col - 30), (middle_line + 8, middle_col + 30), ]
             elif ring == 3:
                 ring_positions = [(middle_line - 18, middle_col - 15),(middle_line - 18, middle_col + 15),(middle_line + 18, middle_col - 15),(middle_line + 18, middle_col + 15),(middle_line - 2, middle_col - 60),(middle_line + 2, middle_col - 60), (middle_line - 2, middle_col + 60),  (middle_line + 2, middle_col + 60),  ]
             else:
                 angle_step = 360 // (ring * 4)  
-                radius_row = min(ring * 6, (size.lines // 2) - 3)
-                radius_col = min(ring * 15, (size.columns // 2) - 10)
+                radius_row = min(ring * 4, (size.lines // 2) - 3)
+                radius_col = min(ring * 30, (size.columns // 2) - 10)
                 for angle in range(0, 360, angle_step):
                     rad = math.radians(angle)
                     row = int(middle_line + radius_row * math.sin(rad))
@@ -214,5 +215,5 @@ class SmartTextAnalyzer():
 if __name__=="__main__":
     file=open("SpaceIpsum.txt").read()
     Report=SmartTextAnalyzer(file)
-    Report.WordCloud(30,True,Vis=True)
+    Report.WordCloud(40,True,Vis=True)
 
