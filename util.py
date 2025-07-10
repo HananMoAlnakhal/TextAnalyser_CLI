@@ -1,5 +1,5 @@
 class CircularDoubledList:
-    class ColorNode:
+    class Node:
         def __init__(self,val,next=None,prev=None):
             self.v=val
             self.next=next
@@ -11,7 +11,7 @@ class CircularDoubledList:
         self._size=0
 
     def enqueue(self,e):
-        newest=self.ColorNode(e)
+        newest=self.Node(e)
         if self._size==0:
             newest.next=newest
             newest.prev=newest

@@ -13,3 +13,9 @@ with open(os.path.join(base,"3Grams.pkl"), "rb") as f:
 
 with open(os.path.join(base,"2Grams.pkl"), "rb") as f:
     Pred2Gram = pickle.load(f)
+
+with open(os.path.join(base,"positive_lex.pkl"), "rb") as f:
+    POSITIVE_LEX = pickle.load(f)
+
+with open(os.path.join(base,"negative_lex.pkl"), "rb") as f:
+    NEGATIVE_LEX = pickle.load(f)

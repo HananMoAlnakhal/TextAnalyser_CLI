@@ -12,17 +12,16 @@ class SmartTextAnalyzer():
     punctuation="!@#$%^&*()/|\\,._--=+><?'\"}{[:;؛ّ~`]â€"
     contractions = {"ain't": "is not","aren't": "are not","can't": "cannot","couldn't": "could not","didn't": "did not","doesn't": "does not","don't": "do not","hadn't": "had not","hasn't": "has not","haven't": "have not","isn't": "is not","mightn't": "might not","mustn't": "must not","needn't": "need not","shan't": "shall not","shouldn't": "should not","wasn't": "was not","weren't": "were not","won't": "will not","wouldn't": "would not"}
     other_contractions = {"i'm": "i am","you're": "you are","he's": "he is","she's": "she is","it's": "it is","we're": "we are","they're": "they are","i've": "i have","you've": "you have","we've": "we have","they've": "they have","who's": "who is","what's": "what is","where's": "where is","when's": "when is","why's": "why is","how's": "how is","i'd": "i would","you'd": "you would","he'd": "he would","she'd": "she would","we'd": "we would","they'd": "they would","i'll": "i will","you'll": "you will","he'll": "he will","she'll": "she will","we'll": "we will","they'll": "they will","there's": "there is","here's": "here is","let's": "let us","that's": "that is","who'd": "who would","who'll": "who will","who've": "who have","y'all": "you all"}
-    negates={"never","no","nothing","nowhere","noone","none","not"}
-
     all_contractions = {**contractions, **other_contractions}
+    negates={"never","no","neither","hardly","barely","nor","nothing","nowhere","noone","none","not","rarely","scarcely","seldom"}
+    positive_lex=POSITIVE_LEX
+    negative_lex=NEGATIVE_LEX
 
     def __init__(self,TextInput=""):
         self.text=TextInput
         self.sentences=[]
         self.words=[]
         self.NextWordPred=Text_Predictor()
-        # self.text_ngram={}
-        # self.ngram = {}
         if self.text!="":
             self.sentences=self.getSentences()
             self.words=self.getWords()
@@ -266,5 +265,4 @@ class SmartTextAnalyzer():
 
 
 if __name__=="__main__":
-
-    print(TRIE.auto_complete("app"))
+    pass
