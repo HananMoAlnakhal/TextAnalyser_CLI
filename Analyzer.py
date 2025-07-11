@@ -12,17 +12,14 @@ class SmartTextAnalyzer():
     punctuation="!@#$%^&*()/|\\,._--=+><?'\"}{[:;؛ّ~`]â€"
     contractions = {"ain't": "is not","aren't": "are not","can't": "cannot","couldn't": "could not","didn't": "did not","doesn't": "does not","don't": "do not","hadn't": "had not","hasn't": "has not","haven't": "have not","isn't": "is not","mightn't": "might not","mustn't": "must not","needn't": "need not","shan't": "shall not","shouldn't": "should not","wasn't": "was not","weren't": "were not","won't": "will not","wouldn't": "would not"}
     other_contractions = {"i'm": "i am","you're": "you are","he's": "he is","she's": "she is","it's": "it is","we're": "we are","they're": "they are","i've": "i have","you've": "you have","we've": "we have","they've": "they have","who's": "who is","what's": "what is","where's": "where is","when's": "when is","why's": "why is","how's": "how is","i'd": "i would","you'd": "you would","he'd": "he would","she'd": "she would","we'd": "we would","they'd": "they would","i'll": "i will","you'll": "you will","he'll": "he will","she'll": "she will","we'll": "we will","they'll": "they will","there's": "there is","here's": "here is","let's": "let us","that's": "that is","who'd": "who would","who'll": "who will","who've": "who have","y'all": "you all"}
-    negates={"never","no","nothing","nowhere","noone","none","not"}
-
     all_contractions = {**contractions, **other_contractions}
+    negates={"never","not","no","neither","hardly","barely","nor","nothing","nowhere","noone","none","not","rarely","scarcely","seldom"}
 
     def __init__(self,TextInput=""):
         self.text=TextInput
         self.sentences=[]
         self.words=[]
         self.NextWordPred=Text_Predictor()
-        # self.text_ngram={}
-        # self.ngram = {}
         if self.text!="":
             self.sentences=self.getSentences()
             self.words=self.getWords()
@@ -52,6 +49,7 @@ class SmartTextAnalyzer():
                 if sentence !='':
                     self.sentences.append(sentence.lower())
         return self.sentences
+    
 ########################################################################################
 #      Getting and counting the words from each sentence
 #---------------------------------------------------------------------------------------
@@ -62,11 +60,14 @@ class SmartTextAnalyzer():
         self.uniqueWords={}
         self.CharacterCount=0
         self.CharacterOccurrence={}
+        self.sentiment_by_sentence=[]
+        self.sentiment={"pos":0,"neg":0}
         words=[]
         for sentence in self.sentences:
+            sentiment=0
             expanded_sentence = self.expand_contractions(sentence)
             wordsInSentence = []
-            for word in expanded_sentence.split():
+            for ind,word in enumerate(expanded_sentence.split()):
                 processed = ""
                 for letter in word:
                     if letter != " ":
@@ -75,13 +76,28 @@ class SmartTextAnalyzer():
                     if letter in __class__.punctuation:
                         continue
                     processed += letter
+                # Added my sentiment function 
+                if processed in POSITIVE_LEX or processed in NEGATIVE_LEX:
+                    PRIME=1 if processed in POSITIVE_LEX else-1
+                    if ind>0:
+                        isnegate=expanded_sentence.split()[ind-1]
+                        if isnegate in __class__.negates:
+                            PRIME=PRIME*-1
+                        real="neg" if PRIME<0 else "pos"
+                        self.sentiment[real]+=1
+                        sentiment+=PRIME
+                    else:
+                        real="neg" if PRIME<0 else "pos"
+                        self.sentiment[real]+=1
+                        sentiment+=PRIME
+
                 if processed.isalpha():
                     wordsInSentence.append(processed)
                     self.totalWords += 1
                     __class__.__increment(self.wordsCounts, processed)
                     if processed not in __class__.stopWords:
                         __class__.__increment(self.uniqueWords, processed)
-
+            self.sentiment_by_sentence.append(sentiment)
             self.NextWordPred.add_ngram(wordsInSentence)
             words.append(wordsInSentence)
 
@@ -188,9 +204,9 @@ class SmartTextAnalyzer():
             n=len(Sorted)
         return Sorted[:n]
     
-########################################################################################
+#################################################################################################
 #       Word Cloud
-#---------------------------------------------------------------------------------------
+#------------------------------------------------------------------------------------------------
     def WordCloud(self,n=5,KeyWords=False,Bar=False, Vis=False):
         self._ClearTerminal()
         W=self.MostFrequentWords(n,KeyWords)
@@ -202,7 +218,7 @@ class SmartTextAnalyzer():
                 color=allColors.GetColor(reverse=True)
                 print(BlackBG(w.ljust(25)+color(x*(round(7*f)*10)))+BlackBG(color(" %.2f , %2.2f"%(W[ind][1],f*100)+"% ")))
         if Vis:
-            TakenPOS=self.generate_compact_positions(Words,max_positions=len(Words))
+            TakenPOS=self.generate_compact_positions(max_positions=len(Words))
             for ind in range(len(TakenPOS)):
                 self._Print_square(TakenPOS[ind],allColors.GetColor(reverse=True),int(round(Words[0:len(TakenPOS)][ind][1]*10)),Words[0:len(TakenPOS)][ind][0])
                 print(f"\033[0H")
@@ -218,7 +234,7 @@ class SmartTextAnalyzer():
 #---------------------------------------------------
 # helps Generating poses for the words
 
-    def generate_compact_positions(self,data, max_positions=15):
+    def generate_compact_positions(self, max_positions=15):
         """
         Generate organized positions for compact word cloud design
         Returns a list of (row, col) positions that work with your existing code"""
@@ -235,7 +251,6 @@ class SmartTextAnalyzer():
         
         while added_positions < max_positions and ring <= 8:
             ring_positions = []
-            
             if ring == 1:
                 ring_positions = [(middle_line, middle_col - 30),    (middle_line, middle_col + 25),  (middle_line - 6, middle_col),   (middle_line + 6, middle_col),     (middle_line - 4, middle_col - 18), (middle_line - 4, middle_col + 18), (middle_line + 4, middle_col - 18), (middle_line + 4, middle_col + 18), ]
             elif ring == 2:
