@@ -1,5 +1,5 @@
 from util import CircularDoubledList
-
+import shutil
 #-----------------ToPrintTextWithColors--------------------
 
 # def GRASS(text,BG=False): (＞﹏＜) I didn't like that color anymore!
@@ -61,6 +61,13 @@ def ITALIC(text):
     return '\x1b[3m'+str(text)+'\x1b[0m'
 def UNDERLINED(text):
     return '\x1b[4m'+str(text)+'\x1b[0m'
+
+size= shutil.get_terminal_size()
+
+def CENTER_SCREEN(text,line=0):
+    text=f"\033[{(size.lines)//2 + line};{(size.columns-len(text))//2}H{text}" 
+    return text
+
 #------------------------------------------
 #    RAINBOW-colors
 # -----------------------------------------
