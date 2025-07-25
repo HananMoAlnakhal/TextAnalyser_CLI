@@ -417,7 +417,7 @@ def SmartTextEditor(stopCriteria="#"):
     
     # Print simple header
     print(f'Smart Text Editor - Press {SkyBlue("ESC / ENTER")} to go to next line, {SkyBlue("Ctrl+Z")} to undo, {SkyBlue("Ctrl+Y")} to redo, Use {SkyBlue("UP/DOWN arrows")} to navigate suggestions, {SkyBlue("TAB")} to select one')
-    print(f"when done add a final line with {FOSHII('##')} and press enter")
+    print(f"when done add a final line with {FOSHII(stopCriteria)} and press enter")
     print("="*60)
     
     while True:
@@ -427,7 +427,10 @@ def SmartTextEditor(stopCriteria="#"):
         if x!="":
             lines.append(x.lower().strip())
         pointer_pos += 1
-    
+    if lines==[]:
+        clear_screen()
+        print(CENTER_SCREEN(BOLD("You entered NO text to be processed please enter again or press E to hose another way of entering")))
+        return SmartTextEditor()
     return lines
 
 if __name__ == "__main__":

@@ -102,6 +102,8 @@ class SmartTextAnalyzer():
             words.append(wordsInSentence)
 
         self.uniqueCount = sum(self.uniqueWords.values())
+        # self.uni=list(filter(lambda x:x[1]==1,self.wordsCounts.items()))
+        self.uni=self.wordsCounts.keys()
         return words
 
     def expand_contractions(self,sentence):
@@ -281,5 +283,5 @@ class SmartTextAnalyzer():
 
 
 if __name__=="__main__":
-    SmartTextEditor()
-    # print(TRIE.auto_complete("app"))
+    DemoText=open("SpaceIpsum.txt").read()
+    Report=SmartTextAnalyzer(DemoText)
