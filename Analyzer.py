@@ -152,7 +152,6 @@ class SmartTextAnalyzer():
                         textWithTarget= word
                         break
                 wordIndx+=sentence[wordIndx+1:len(sentence)].find(textWithTarget)+1
-                print(wordIndx)
                 SearchResult.append(((sentence_num,wordIndx),s,pos,pos+len(Target)))
                 pos=s.find(Target,pos+1)
         
@@ -188,9 +187,9 @@ class SmartTextAnalyzer():
                     Bpos+=len(oldNewDic[s])-len(s)
                     Epos+=len(oldNewDic[s])-len(s)
                     s=oldNewDic[s]
-                print(BOLD("sentence "+str(INX+1)+"Before replacing :\n")+s[0:Bpos]+ORANGE(s[Bpos:Epos])+s[Epos:len(s)])
+                print(BOLD("sentence "+str(INX+1)+" Before replacing :\n")+s[0:Bpos]+ORANGE(s[Bpos:Epos])+s[Epos:len(s)])
                 NewSentence=s[0:Bpos]+NewVal+s[Epos:len(s)]
-                print("would be replaced to:\n"+s[0:Bpos]+GREEN(NewSentence[Bpos:len(NewVal)+Bpos])+NewSentence[len(NewVal)+Bpos:len(NewSentence)])
+                print("would be replaced with:\n"+s[0:Bpos]+GREEN(NewSentence[Bpos:len(NewVal)+Bpos])+NewSentence[len(NewVal)+Bpos:len(NewSentence)])
                 self.sentences[SenIndx]=NewSentence
                 oldNewDic[s]=NewSentence
             self.words=self.getWords()

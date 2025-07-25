@@ -92,7 +92,7 @@ def menu_Options_display():
         clear_screen()
         size= shutil.get_terminal_size()
         print("\033[1;0H"+SkyBlue(TITLE))
-        # print(CENTER_SCREEN("MAIN MENUE",-5))
+        # print(CENTER_SCREEN("MAIN MENU",-5))
         print(BOLD(f'{GREEN(options[0]) if current == 1 else Gray1(options[0])}').center(size.columns))
         print(BOLD(f'{GREEN(options[1]) if current == 2 else Gray1(options[1])}').center(size.columns))
         print(BOLD(f'{GREEN(options[2]) if current == 3 else Gray1(options[2])}').center(size.columns))
@@ -126,7 +126,6 @@ def menu_Options_display():
                     return current
             else:
                 print("\033[0;0HPLEASE Use UP/DOWN arrow keys to chose one option\nPress Enter to confirm choice")
-
 
 def Get_Text(*text):
     global Report
@@ -169,6 +168,7 @@ def print_table(Table,center=False,right=False):
             print(line.rjust(Terminal_Width))
         else:
             print(line)
+
 def display_Word_stats(Report,n=10):
     def display():
         clear_screen()
@@ -195,7 +195,6 @@ def display_Word_stats(Report,n=10):
             if Char=="ESC":
                 return
 
-
 def display_Character_stats(Report):
     def display():
         clear_screen()
@@ -204,7 +203,7 @@ def display_Character_stats(Report):
         print(CYAN(f"{UNDERLINED(BOLD('Character STATS'))} "+"─"*30+f" press {PINK('esc')} to back to menu"))
         print()
         print(f"{BABY_Yellow('Character Count #:')}\t\t{Report.CharacterCount}")
-        print(f"{CYAN('Unique Character #:')}\t\t{len(Report.uni)}")
+        print(f"{CYAN('Unique Character #:')}\t\t{len(list(Report.CharacterOccurrence.keys()))}")
         print_table(Data_table(Report.CharacterOccurrence,c_w=0)[0],center=True)
 
     display()
@@ -213,10 +212,47 @@ def display_Character_stats(Report):
             Char=get_key()
             if Char=="ESC":
                 return
-            
+
+def input_box(title="",shape=False,pos=5):
+    print(f"\033[{pos};0H  {title}")
+    print("  \u256D"+"\u2500"*(get_terminal_size().columns-8)+"\u256E")
+    print("  \u2502"+" "*(get_terminal_size().columns-8)+"\u2502")
+    print("  \u2570"+"\u2500"*(get_terminal_size().columns-8)+"\u256F")
+    print(f"\033[{pos+1};10H")
+    if not shape:
+        input_Text=input("  \u2502"+" ",)
+        print(f"\033[{pos+3};5H")
+        return input_Text
+       
 def Search_sc(Report):
     def display():
-        pass
+        clear_screen()
+        input_box(pos=5,title=SkyBlue("Text to search:"),shape=True)
+        text_for_search=""
+        while text_for_search =="":
+            text_for_search=input_box(pos=5)
+
+        search_results=Report.searchText(text_for_search)
+        Report._displaySearch(search_results)
+    display()
+    while True:
+        if msvcrt.kbhit():
+            display()
+            Char=get_key()
+            if Char=="ESC":
+                return
+
+def replace_sc(Report):
+    def display():
+        clear_screen()
+        input_box(pos=5,title=ORANGE("Old text:"),shape=True)
+        input_box(pos=10,title=GREEN("New Value:"),shape=True)
+        text_for_search=""
+        replace_with=""
+        while text_for_search =="" or replace_with=="":
+            text_for_search=input_box(pos=5)
+            replace_with=input_box(pos=10)
+        Report.replaceWords(text_for_search,replace_with)
 
     display()
     while True:
@@ -224,6 +260,46 @@ def Search_sc(Report):
             Char=get_key()
             if Char=="ESC":
                 return
+            display()
+
+def Word_Cloud(Report):
+    def display(p):
+        clear_screen()
+        if p==1:
+            Report.WordCloud(n=30,KeyWords=True,Vis=True)
+        if p==2:
+            Report.WordCloud(n=30,KeyWords=False,Vis=True)
+        if p==3:
+            Report.WordCloud(n=30,KeyWords=True,Bar=True)
+        if p==4:
+           Report.WordCloud(n=30,KeyWords=False,Bar=True)
+        # cases[p-1]
+
+    display(1)
+    maxLim=4
+    minLim=1
+    pos=1
+    while True:
+        if msvcrt.kbhit():
+            Char=get_key()
+            if Char == "LEFT":
+                if pos > minLim:
+                    pos -= 1
+                else:
+                    pos=maxLim
+                display(pos)
+            elif Char == "RIGHT":
+                if pos < maxLim:
+                    pos += 1
+                else:
+                    pos=minLim
+
+                display(pos)
+            elif Char=="ESC":
+                return
+            else:
+                print(f"\033[0;0HPLEASE Use Right/Left arrow keys to navigate between clouds \nPress {RED("esc")} to back to menu")
+
 def main():
     COL=shutil.get_terminal_size().columns
     while COL< 150:
@@ -244,7 +320,7 @@ def main():
     time.sleep(1)
 
     while True:
-        screens=[display_Word_stats,display_Character_stats,Search_sc,0,Get_Text,Get_Text,Get_Text]
+        screens=[display_Word_stats,display_Character_stats,Search_sc,replace_sc,Word_Cloud,Get_Text,Get_Text]
         option=menu_Options_display()
         if option=="EXIT":
             break
