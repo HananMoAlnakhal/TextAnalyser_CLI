@@ -277,9 +277,3 @@ class SmartTextAnalyzer():
             ring += 1
         return positions[:max_positions]
 
-
-
-
-if __name__=="__main__":
-    SmartTextEditor()
-    # print(TRIE.auto_complete("app"))

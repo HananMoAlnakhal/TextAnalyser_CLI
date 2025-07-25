@@ -6,6 +6,7 @@ from Analyzer import *
 import tkinter as tk
 from tkinter import filedialog
 import time
+
 def choose_file():
     root = tk.Tk()
     root.withdraw() 
@@ -34,7 +35,6 @@ def choose_file():
         time.sleep(2)
         print(CENTER_SCREEN("please try again..",2))
         return choose_file()
-
 
 
 def choose_input_method():
