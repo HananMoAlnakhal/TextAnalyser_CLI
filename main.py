@@ -310,7 +310,8 @@ def Word_Cloud():
                 print(f"\033[0;0HPLEASE Use Right/Left arrow keys to navigate between clouds \nPress {RED('esc')} to back to menu")
 
 
-def Sentiment_display(Report):
+def Sentiment_display():
+    global Report
     num_pos_lex=Report.sentiment["pos"]
     num_neg_lex=Report.sentiment["neg"]
     total_emotional_lex=num_neg_lex+num_pos_lex
@@ -398,18 +399,13 @@ def main():
         option=menu_Options_display()
         if option=="EXIT":
             break
-        screens[option-1]
+        screens[option-1]()
             
     clear_screen()
     print("\033[0;0H"+BOLD(ITALIC(BABY_Yellow("thanks for using ＜（＾－＾）＞\nMADE BY :"))))
     print("\033[2;0H"+CYAN(Myname2))
     time.sleep(0.5)
-    return
-    # print(CENTER_SCREEN("SEE YOU LATER ✨"))
+    return 
 
-
-    
-    
-
-
-main()
+if __name__=="__main__":
+    main()
