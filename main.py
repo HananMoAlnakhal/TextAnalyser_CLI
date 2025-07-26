@@ -233,32 +233,34 @@ def Search_sc():
     global Report
     def display():
         clear_screen()
-        input_box(pos=5,title=SkyBlue("Text to search:"),shape=True)
+        print(BABY_Yellow(BOLD(search5)))
+        input_box(pos=7,title=SkyBlue("Text to search:"),shape=True)
         text_for_search=""
         while text_for_search =="":
-            text_for_search=input_box(pos=5)
+            text_for_search=input_box(pos=7)
 
         search_results=Report.searchText(text_for_search)
         Report._displaySearch(search_results)
     display()
     while True:
         if msvcrt.kbhit():
-            display()
             Char=get_key()
             if Char=="ESC":
                 return
+            display()
 
 def replace_sc():
     global Report
     def display():
         clear_screen()
-        input_box(pos=5,title=ORANGE("Old text:"),shape=True)
-        input_box(pos=10,title=GREEN("New Value:"),shape=True)
+        print(BABY_Yellow(BOLD(Replace3)))
+        input_box(pos=7,title=ORANGE("Old text:"),shape=True)
+        input_box(pos=12,title=GREEN("New Value:"),shape=True)
         text_for_search=""
         replace_with=""
         while text_for_search =="" or replace_with=="":
-            text_for_search=input_box(pos=5)
-            replace_with=input_box(pos=10)
+            text_for_search=input_box(pos=7)
+            replace_with=input_box(pos=12)
         Report.replaceWords(text_for_search,replace_with)
 
     display()
@@ -281,7 +283,6 @@ def Word_Cloud():
             Report.WordCloud(n=30,KeyWords=True,Bar=True)
         if p==4:
            Report.WordCloud(n=30,KeyWords=False,Bar=True)
-        # cases[p-1]
 
     display(1)
     maxLim=4
@@ -308,11 +309,76 @@ def Word_Cloud():
             else:
                 print(f"\033[0;0HPLEASE Use Right/Left arrow keys to navigate between clouds \nPress {RED('esc')} to back to menu")
 
+
+def Sentiment_display(Report):
+    num_pos_lex=Report.sentiment["pos"]
+    num_neg_lex=Report.sentiment["neg"]
+    total_emotional_lex=num_neg_lex+num_pos_lex
+    sentence_emotion=Report.sentiment_by_sentence
+    posSentC=len([x for x in sentence_emotion if x>0])
+    # NatSentC=len([x for x in sentence_emotion if x==0])
+    NegSentC=len([x for x in sentence_emotion if x<0])
+    num_sentences=len(sentence_emotion)
+    POS_Sent_Percentage=round(posSentC/(posSentC+NegSentC) *100,1)
+    Neg_Sent_Percentage=100-POS_Sent_Percentage
+    TEXT_EMO=True if POS_Sent_Percentage>Neg_Sent_Percentage else False
+    def display(p):
+        clear_screen()
+        if p==1:
+            print("\033[0;0H"+BABY_Yellow(BOLD(Sentement_analy)))
+            print(BOLD("overall sentiment~"))
+            if TEXT_EMO:
+                print(GREEN(BOLD(positive_small)))
+            else:
+                print(BROWN(BOLD(negative_small)))
+            print(f"\033[{10};{50}H"+ITALIC(BOLD(GREEN("# positive lex : ")))+BLUE(str(num_pos_lex))+"\t percentage :"+CYAN(BOLD(str(round((num_pos_lex/total_emotional_lex)*100,1))+"%")))
+            print(f"\033[{11};{50}H"+ITALIC(BOLD(ORANGE("# negative lex : ")))+BLUE(str(num_neg_lex))+"\t percentage :"+CYAN(BOLD(str(round((num_neg_lex/total_emotional_lex)*100,1))+"%")))
+            print(f"\033[{12};{50}H"+ITALIC(BOLD("# Total sentences :"))+sysBLUE(str(num_sentences)))
+            print(f"\033[{13};{50}H"+ITALIC(BOLD(GREEN(str(POS_Sent_Percentage))))+" of sentences are "+BOLD(GREEN("positive")))
+            print(f"\033[{14};{50}H"+ITALIC(BOLD(GREEN(str(round(Neg_Sent_Percentage,1)))))+" of sentences are "+BOLD(ORANGE("negative")))
+            print(" ")
+        elif p==2:
+            print("\033[0;0H")
+            for ind,sentence in enumerate(Report.words) :
+                if sentence_emotion[ind]>0:
+                    print(GREEN(BOLD(UNDERLINED(" ".join(sentence)))))
+                elif sentence_emotion[ind]==0:
+                    print(Gray4(ITALIC(" ".join(sentence))))
+                else:
+                    print(ORANGE(BOLD(" ".join(sentence))))
+            print(" ")
+
+    maxLim=2
+    minLim=1
+    pos=1
+    display(pos)
+    while True:
+        if msvcrt.kbhit():
+            Char=get_key()
+            if Char == "LEFT":
+                if pos > minLim:
+                    pos -= 1
+                else:
+                    pos=maxLim
+                display(pos)
+
+            elif Char == "RIGHT":
+                if pos < maxLim:
+                    pos += 1
+                else:
+                    pos=minLim
+                display(pos)
+
+            elif Char=="ESC":
+                return
+            else:
+                print(f"\033[0;0HPLEASE Use Right/Left arrow keys to navigate between clouds \nPress {RED('esc')} to back to menu")
+
 def main():
     COL=shutil.get_terminal_size().columns
     while COL< 150:
-        print(CENTER_SCREEN(" PLEASE EDIT THE WINDOW WIDTH AND MA IT ---wider----"))
-        time.sleep(0.3)
+        print(CENTER_SCREEN(" PLEASE EDIT THE WINDOW WIDTH AND MAKE IT ---wider----"))
+        time.sleep(0.6)
         COL=shutil.get_terminal_size().columns
     Get_Text()
     clear_screen()
@@ -328,14 +394,18 @@ def main():
     time.sleep(1)
 
     while True:
-        screens=[display_Word_stats,display_Character_stats,Search_sc,replace_sc,Word_Cloud,Get_Text,Get_Text]
+        screens=[display_Word_stats,display_Character_stats,Search_sc,replace_sc,Word_Cloud,Sentiment_display,Get_Text]
         option=menu_Options_display()
         if option=="EXIT":
             break
         screens[option-1]
             
     clear_screen()
-    print(CENTER_SCREEN("SEE YOU LATER ✨"))
+    print("\033[0;0H"+BOLD(ITALIC(BABY_Yellow("thanks for using ＜（＾－＾）＞\nMADE BY :"))))
+    print("\033[2;0H"+CYAN(Myname2))
+    time.sleep(0.5)
+    return
+    # print(CENTER_SCREEN("SEE YOU LATER ✨"))
 
 
     
