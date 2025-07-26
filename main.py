@@ -301,7 +301,7 @@ def Word_Cloud(Report):
             elif Char=="ESC":
                 return
             else:
-                print(f"\033[0;0HPLEASE Use Right/Left arrow keys to navigate between clouds \nPress {RED("esc")} to back to menu")
+                print(f"\033[0;0HPLEASE Use Right/Left arrow keys to navigate between clouds \nPress {RED('esc')} to back to menu")
 
 def main():
     COL=shutil.get_terminal_size().columns
