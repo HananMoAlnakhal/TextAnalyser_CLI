@@ -172,7 +172,8 @@ def print_table(Table,center=False,right=False):
         else:
             print(line)
 
-def display_Word_stats(Report,n=10):
+def display_Word_stats(n=10):
+    global Report
     def display():
         clear_screen()
         print(BABY_Yellow(BOLD(WordsStats)))
@@ -198,7 +199,8 @@ def display_Word_stats(Report,n=10):
             if Char=="ESC":
                 return
 
-def display_Character_stats(Report):
+def display_Character_stats():
+    global Report
     def display():
         clear_screen()
         print(BABY_Yellow(BOLD(chr_Stats)))
@@ -227,7 +229,8 @@ def input_box(title="",shape=False,pos=5):
         print(f"\033[{pos+3};5H")
         return input_Text
        
-def Search_sc(Report):
+def Search_sc():
+    global Report
     def display():
         clear_screen()
         input_box(pos=5,title=SkyBlue("Text to search:"),shape=True)
@@ -245,7 +248,8 @@ def Search_sc(Report):
             if Char=="ESC":
                 return
 
-def replace_sc(Report):
+def replace_sc():
+    global Report
     def display():
         clear_screen()
         input_box(pos=5,title=ORANGE("Old text:"),shape=True)
@@ -265,7 +269,8 @@ def replace_sc(Report):
                 return
             display()
 
-def Word_Cloud(Report):
+def Word_Cloud():
+    global Report
     def display(p):
         clear_screen()
         if p==1:
@@ -327,7 +332,7 @@ def main():
         option=menu_Options_display()
         if option=="EXIT":
             break
-        screens[option-1](Report)
+        screens[option-1]
             
     clear_screen()
     print(CENTER_SCREEN("SEE YOU LATER ✨"))
