@@ -1,13 +1,13 @@
-from predictor import *
-from TEXTstyling import *
-from TextEditor import *
-from util import *
-from Analyzer import *
+from app.predictor import *
+from app.TEXTstyling import *
+from app.TextEditor import *
+from app.util import *
+from app.Analyzer import *
+from app.TextEditor import *
+
 import tkinter as tk
 from tkinter import filedialog
-from TextEditor import *
 import time
-
 from shutil import get_terminal_size
 from math import ceil
 Report=None
@@ -42,12 +42,10 @@ def choose_file():
         print(CENTER_SCREEN("please try again..",2))
         return choose_file()
 
-
-
 def choose_input_method():
-    clear_screen()
     flag=None
     def display_input():
+        clear_screen()
         print(CENTER_SCREEN(BOLD("Do you want to write text? or to import a text file?"),-2),end="")
         options=CENTER_SCREEN(f'                {GREEN("write your text") if flag == True else Gray1("write your text")}   '+\
                               f'   {GREEN("import Text") if flag == False else Gray1("import Text")}',1)
@@ -94,17 +92,18 @@ def menu_Options_display():
     def display_input():
         clear_screen()
         size= shutil.get_terminal_size()
-        print("\033[1;0H"+SkyBlue(TITLE))
-        # print(CENTER_SCREEN("MAIN MENU",-5))
-        print(BOLD(f'{GREEN(options[0]) if current == 1 else Gray1(options[0])}').center(size.columns))
-        print(BOLD(f'{GREEN(options[1]) if current == 2 else Gray1(options[1])}').center(size.columns))
-        print(BOLD(f'{GREEN(options[2]) if current == 3 else Gray1(options[2])}').center(size.columns))
-        print(BOLD(f'{GREEN(options[3]) if current == 4 else Gray1(options[3])}').center(size.columns))
-        print(BOLD(f'{GREEN(options[4]) if current == 5 else Gray1(options[4])}').center(size.columns))
-        print(BOLD(f'{GREEN(options[5]) if current == 6 else Gray1(options[5])}').center(size.columns))
-        print(BOLD(f'{GREEN(options[6]) if current == 7 else Gray1(options[6])}').center(size.columns))
-        print(BOLD(f'{RED(options[7]) if current == 8 else Gray1(options[7])}').center(size.columns))        
-        print("\n\n"+"_"*size.columns)
+        print("\033[2;0H"+SkyBlue(TITLE))
+        print()
+        print()
+        print(BOLD(f'{GREEN(options[0]) if current == 1 else Gray1(options[0])}').center(size.columns),end="\n\n")
+        print(BOLD(f'{GREEN(options[1]) if current == 2 else Gray1(options[1])}').center(size.columns),end="\n\n")
+        print(BOLD(f'{GREEN(options[2]) if current == 3 else Gray1(options[2])}').center(size.columns),end="\n\n")
+        print(BOLD(f'{GREEN(options[3]) if current == 4 else Gray1(options[3])}').center(size.columns),end="\n\n")
+        print(BOLD(f'{GREEN(options[4]) if current == 5 else Gray1(options[4])}').center(size.columns),end="\n\n")
+        print(BOLD(f'{GREEN(options[5]) if current == 6 else Gray1(options[5])}').center(size.columns),end="\n\n")
+        print(BOLD(f'{GREEN(options[6]) if current == 7 else Gray1(options[6])}').center(size.columns),end="\n\n")
+        print(BOLD(f'{RED(options[7]) if current == 8 else Gray1(options[7])}').center(size.columns),end="\n\n")        
+        print("\n\n\n\n"+"_"*size.columns)
         print(Title2)
         
     display_input()
@@ -183,14 +182,14 @@ def display_Word_stats(n=10):
         print(f"{BABY_Yellow('TOTAL WORDS #:')}\t\t{Report.totalWords}")
         print(f"{GREEN('Unique words #:')}\t\t{len(Report.uni)}")
         print(f"{CYAN('keywords count:')}\t\t{Report.uniqueCount}")
-        print("\u250C"+("\u2500"*23)+"\u252C"+("\u2500"*22)+"\u2510")
-        print("\u2502 "+"word".ljust(9)+ "Frequency".center(10)+"\t\u2502"+f" {CYAN('keyword')}   Frequency  \u2502")
-        print("\u251C"+("\u2500"*23)+"\u253C"+("\u2500"*22)+"\u2524")
+        print("\u250C"+("\u2500"*26)+"\u252C"+("\u2500"*31)+"\u2510")
+        print("\u2502 "+"word".ljust(15)+ "Frequency".center(10)+"\u2502"+CYAN(' keyword').ljust(30)+('Frequency').center(15)+"\u2502")
+        print("\u251C"+("\u2500"*26)+"\u253C"+("\u2500"*31)+"\u2524")
         Most_FrequentWords=Report.MostFrequentWords(n=n)
         Most_FrequentKeyWords=Report.MostFrequentWords(n=n,KeyWords=True)
         for Freq,key in zip(Most_FrequentWords,Most_FrequentKeyWords):
-            print("\u2502 "+Freq[0].ljust(9)+str(Freq[1]).center(10)+"\t\u2502",(key[0].ljust(9)+str(key[1]).center(10))+"  \u2502")
-        print("\u2514"+("\u2500"*23)+"\u2534"+("\u2500"*22)+"\u2518\n")
+            print("\u2502 "+Freq[0].ljust(15)+str(Freq[1]).center(10)+"\u2502",(key[0].ljust(15)+str(key[1]).center(15))+"\u2502")
+        print("\u2514"+("\u2500"*26)+"\u2534"+("\u2500"*31)+"\u2518\n")
         
     display()
     while True:
@@ -336,7 +335,7 @@ def Sentiment_display():
             print(f"\033[{11};{50}H"+ITALIC(BOLD(ORANGE("# negative lex : ")))+BLUE(str(num_neg_lex))+"\t percentage :"+CYAN(BOLD(str(round((num_neg_lex/total_emotional_lex)*100,1))+"%")))
             print(f"\033[{12};{50}H"+ITALIC(BOLD("# Total sentences :"))+sysBLUE(str(num_sentences)))
             print(f"\033[{13};{50}H"+ITALIC(BOLD(GREEN(str(POS_Sent_Percentage))))+" of sentences are "+BOLD(GREEN("positive")))
-            print(f"\033[{14};{50}H"+ITALIC(BOLD(GREEN(str(round(Neg_Sent_Percentage,1)))))+" of sentences are "+BOLD(ORANGE("negative")))
+            print(f"\033[{14};{50}H"+ITALIC(BOLD(ORANGE(str(round(Neg_Sent_Percentage,1)))))+" of sentences are "+BOLD(ORANGE("negative")))
             print(" ")
         elif p==2:
             print("\033[0;0H")
@@ -378,6 +377,7 @@ def Sentiment_display():
 def main():
     COL=shutil.get_terminal_size().columns
     while COL< 150:
+        clear_screen()
         print(CENTER_SCREEN(" PLEASE EDIT THE WINDOW WIDTH AND MAKE IT ---wider----"))
         time.sleep(0.6)
         COL=shutil.get_terminal_size().columns
@@ -402,8 +402,9 @@ def main():
         screens[option-1]()
             
     clear_screen()
-    print("\033[0;0H"+BOLD(ITALIC(BABY_Yellow("thanks for using ＜（＾－＾）＞\nMADE BY :"))))
-    print("\033[2;0H"+CYAN(Myname2))
+    print("\033[1;0H"+BOLD(ITALIC(BABY_Yellow("thanks for using < (^-^) >"))).center(size.columns))
+    print("\033[2;0H"+BOLD(ITALIC(BABY_Yellow("MADE BY :"))).center(size.columns))
+    print("\033[5;0H"+CYAN(Myname2))
     time.sleep(0.5)
     return 
 

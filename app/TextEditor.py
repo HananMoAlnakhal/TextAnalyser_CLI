@@ -1,8 +1,8 @@
 import msvcrt
 import os
-from predictor import *
+from app.predictor import *
 from lang_models import *
-from TEXTstyling import *
+from app.TEXTstyling import *
 # Simple undo/redo stack
 undo_stack = []
 redo_stack = []
